@@ -1,0 +1,83 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate Your Account</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+  
+  <!-- MAIN EMAIL CONTAINER -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f4f4f4">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        
+        <!-- EMAIL CONTENT CONTAINER -->
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 600px; border-radius: 10px;">
+          
+          <!-- LOGO -->
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <img src="https://yourcompany.com/logo.png" width="150" alt="Company Logo">
+            </td>
+          </tr>
+          
+          <!-- HEADER -->
+          <tr>
+            <td align="center" style="padding: 10px 20px;">
+              <h2 style="color: #333; font-family: Arial, sans-serif;">🎉 Welcome, {{ user.first_name }}! 🎉</h2>
+              <p style="color: #555; font-family: Arial, sans-serif; font-size: 16px;">
+                You're one step away from unlocking all the amazing features of <strong>Admissions</strong>!
+              </p>
+            </td>
+          </tr>
+          
+          <!-- BUTTON -->
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td bgcolor="#007bff" style="border-radius: 5px;">
+                    <a href="http://{{ domain }}{% url 'user:activate' uidb64=uid token=token %}"
+                       style="display: inline-block; padding: 12px 24px; font-size: 16px; font-family: Arial, sans-serif; 
+                              color: white; text-decoration: none; font-weight: bold; background-color: #007bff; 
+                              border-radius: 5px;">
+                      🚀 Activate My Account
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FOOTER TEXT -->
+          <tr>
+            <td align="center" style="padding: 10px 20px;">
+              <p style="color: #888; font-size: 14px; font-family: Arial, sans-serif;">
+                If the button above does not work, copy and paste this link into your browser:
+              </p>
+              <p style="word-wrap: break-word; color: #007bff; font-size: 12px; font-family: Arial, sans-serif;">
+                http://{{ domain }}{% url 'user:activate' uidb64=uid token=token %}
+              </p>
+            </td>
+          </tr>
+          
+          <!-- FOOTER -->
+          <tr>
+            <td align="center" style="padding: 20px; font-size: 12px; font-family: Arial, sans-serif; color: #999;">
+              &copy; 2025 Admissions. All rights reserved.
+            </td>
+          </tr>
+          
+        </table>
+        <!-- END OF EMAIL CONTENT -->
+        
+      </td>
+    </tr>
+  </table>
+  <!-- END OF MAIN EMAIL CONTAINER -->
+
+</body>
+</html>
+{% endautoescape %}

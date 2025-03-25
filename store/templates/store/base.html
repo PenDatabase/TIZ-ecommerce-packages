@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CU Packages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.2s ease-in;
+    }
+    .slide-in {
+      animation: slideIn 1s ease-out;
+    }
+    .hover-bounce {
+      transition: transform 0.2s;
+    }
+    .hover-bounce:hover {
+      transform: scale(1.05);
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+  <script>
+    // Add fade-in animation to package cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.package-card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('fade-in');
+        }, index * 200);
+      });
+    });
+  </script> 
+  {% block topjs %}
+  {% endblock topjs %}
+
+  
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md fixed top-0 w-full z-50">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <a href="{% url 'store:home' %}" class="text-2xl font-bold text-blue-600">Admissions</a>
+        
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex space-x-6">
+            <li>
+                <a href="{% url 'store:package-listing' %}" 
+                   class="relative text-gray-700 font-medium transition-all duration-300 ease-in-out 
+                   {% if request.path == '/packages/' %} after:scale-x-100 text-blue-600 font-semibold {% endif %}
+                   hover:text-blue-600 after:block after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-blue-600 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300">
+                    Packages
+                </a>
+            </li>
+            <li>
+                <a href="#about" 
+                   class="relative text-gray-700 font-medium transition-all duration-300 ease-in-out hover:text-blue-600 after:block after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-blue-600 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300">
+                    About
+                </a>
+            </li>
+        </ul>
+
+        <!-- User & Cart Section -->
+        <div class="flex items-center space-x-4">
+            {% if user.is_authenticated %}
+                <div x-data="{ open: false }" class="relative flex items-center space-x-3">
+                    <span class="text-lg font-semibold text-gray-800">Hi {{ user.first_name }}</span>
+                    <button @click="open = !open" class="focus:outline-none">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149072.png"
+                             alt="Profile" class="w-10 h-10 rounded-full border">
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" @click.outside="open = false"
+                        class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50"
+                        x-transition>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Order History</a>
+                        <hr class="border-gray-200">
+                        <form action="{% url 'logout' %}" method="post" class="block">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 font-medium">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
+                <a href="{% url 'user:register' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 font-medium">Register</a>
+            {% endif %}
+            <a href="{% url 'store:cart' %}" class="text-gray-700 hover:text-blue-600">
+                <i class="fas fa-shopping-cart fa-lg"></i> Cart
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-700 focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+  </nav>
+
+  
+  <div class="w-full px-4 mt-20">
+    {% block body %}
+    {% endblock body %}
+  </div>
+    
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-200 py-6">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 CU Packages. All rights reserved.</p>
+      <a href="#" class="text-blue-400 hover:underline">Contact Us</a>
+    </div>
+  </footer>
+
+  {% block bottomjs %}
+  {% endblock bottomjs %}
+  
+</body>
+</html>

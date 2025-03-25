@@ -1,0 +1,95 @@
+{% extends 'store/base.html' %}
+{% block body %}
+  <!-- Package Details Section -->
+  <section class="pt-24 pb-16 bg-gray-100">
+    <div class="container mx-auto px-6">
+      <!-- Package Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <img src="https://via.placeholder.com/500x300" alt="Package Image" class="w-full rounded-lg shadow-lg">
+        <div>
+          <h1 class="text-4xl font-bold mb-4">{{ package.name }}</h1>
+          <p class="text-lg text-gray-700 mb-6">{{ package.description }}</p>
+          <p class="mb-4"><span class="font-bold">Best Use Cases:</span> {{package.use_case}}</p>
+          <p class="mb-4"><span class="font-bold">Price:</span> <span class="text-blue-600 font-bold text-lg">&#8358; {{ package.price }} </span></p>
+          <button class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500">Add to Cart</button>
+          <button id="star-package" class="px-4 py-3 ml-4 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-100"><i class="fas fa-star"></i> Star Package</button>
+        </div>
+      </div>
+
+      <!-- Products in Package -->
+      <div class="mt-16">
+        <h2 class="text-3xl font-bold mb-6">What's Inside?</h2>
+        <div class="overflow-x-auto">
+          <div class="max-h-96 overflow-y-auto border rounded-lg shadow-lg">
+            <table class="min-w-full bg-white">
+              <thead class="bg-gray-200">
+                <tr>
+                  <th class="py-3 px-6 text-left font-semibold">Product Image</th>
+                  <th class="py-3 px-6 text-left font-semibold">Product Name</th>
+                  <th class="py-3 px-6 text-left font-semibold">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- products in package -->
+                {% for package_item in package.package_items.all %}
+                  <tr>
+                    <td class="py-4 px-6">
+                      <img src="https://via.placeholder.com/300x200" alt="Product Image" class="w-24 h-24 object-cover rounded-lg">
+                    </td>
+                    <td class="py-4 px-6 font-semibold">{{ package_item.product }}</td>
+                    <td class="py-4 px-6">{{ package_item.quantity }}</td>
+                  </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Packages -->
+      <div class="mt-16">
+        <h2 class="text-3xl font-bold mb-6">You Might Also Like</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Suggested Package -->
+          <div class="package-card bg-white rounded-lg shadow-lg hover-bounce fade-in">
+            <img src="" alt="Fresher's Starter Pack" class="w-full h-48 object-cover">
+            <div class="p-6">
+                <a href="{% url 'store:package-detail' package.pk %}">
+                    <h3 class="text-lg underline hover:text-blue-600 font-semibold mb-2">{{ package.name }}</h3>
+                </a>
+                <p class="text-gray-600 mb-1">{{ package.description }}</p>
+                <p class="text-sm text-green-500 font-medium mb-4">Best for: {{ package.use_case }}</p>
+                <span class="text-blue-600 font-bold text-lg">&#8358;{{ package.price }}</span>
+                <div class="flex justify-between items-center mt-4">
+                    <a href="#" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500">Add to Cart</a>
+                    <a href="{% url 'store:package-detail' package.pk %}" class="text-blue-600 hover:underline">View Details</a>
+                </div>
+            </div>
+        </div>
+          <!-- Repeat for other suggested packages -->
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock body %}
+
+<!-- Bottom JS -->
+{% block bottomjs %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const starButton = document.getElementById('star-package');
+      starButton.addEventListener('click', () => {
+        if (starButton.classList.contains('bg-blue-600')) {
+          starButton.classList.remove('bg-blue-600', 'text-white');
+          starButton.classList.add('border-blue-600', 'text-blue-600');
+          starButton.innerHTML = '<i class="fas fa-star"></i> Star Package';
+        } else {
+          starButton.classList.add('bg-blue-600', 'text-white');
+          starButton.classList.remove('border-blue-600', 'text-blue-600');
+          starButton.innerHTML = '<i class="fas fa-star"></i> Starred';
+        }
+      });
+    });
+  </script>
+{% endblock bottomjs %}
