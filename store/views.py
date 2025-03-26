@@ -102,18 +102,31 @@ def add_to_cart(request, package_pk):
             })
 
         if package_pk:
-            cart, created = Cart.objects.get_or_create(user = request.user)
-            cart_item, created = CartItem.objects.get_or_create(cart=cart, package_id=package_pk)
-
-            if not created:
+            cart, cart_created = Cart.objects.get_or_create(user = request.user)
+            cart_item, cartitem_created = CartItem.objects.get_or_create(cart=cart, package_id=package_pk)
+            cart_item.save()
+            
+            if not cartitem_created:
                 cart_item.quantity += 1
                 cart_item.save()
 
+        return JsonResponse({
+            "success": True
+            })
+        
+
+def remove_from_cart(request, cartitem_pk):
+    if request.method == "POST":
+        cart_item = CartItem.objects.get(pk=cartitem_pk)
+        
+        if cart_item:
+            cart_item.delete()
+
             return JsonResponse({
                 "success": True
-                })
-        
+            })
         return JsonResponse({
                 "success": False,
-                "detail": f"Invalid paramater '{package_pk}'"
+                "detail": "Cartitem not found"
             })
+        

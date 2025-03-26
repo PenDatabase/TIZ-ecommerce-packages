@@ -15,7 +15,7 @@
                   <div class="w-full">
                     <div class="flex justify-between items-center">
                       <h3 class="text-md font-semibold text-gray-800">{{ cart_item.package.name }}</h3>
-                      <button class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-sm hover:bg-red-600 transition-all duration-200" onclick="removeItem('{{ cart_item.id }}')">
+                      <button class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-sm hover:bg-red-600 transition-all duration-200" onclick="removeItem('{{ cart_item.pk }}')">
                         X
                       </button>
                     </div>
@@ -32,9 +32,27 @@
                 <!-- Total Price -->
                 <p id="price-{{ cart_item.id }}" class="text-lg font-bold text-blue-600">&#8358;{{ cart_item.total_price }}</p>
               </div>
-            {% empty %}
-              <p class="text-gray-500">Your cart is empty.</p>
             {% endfor %}
+
+            <!-- If cart is empty -->
+            <p id="emptycart" class="flex flex-col items-center justify-center text-gray-600 {% if cart.cart_items.exists %} hidden {% endif %} p-8 text-center">
+              <!-- Blue Cart Icon -->
+              <svg class="w-16 h-16 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l1.5 10.5a2 2 0 002 1.5h9a2 2 0 002-1.5L19 7H6"></path>
+                <circle cx="9" cy="19" r="2"></circle>
+                <circle cx="15" cy="19" r="2"></circle>
+              </svg>
+            
+              <!-- Cart Empty Message -->
+              <span class="text-2xl font-semibold">Your cart is empty</span>
+            
+              <!-- Button to Add More Items -->
+              <a href="{% url 'store:package-listing' %}"
+                class="mt-4 px-5 py-2 bg-blue-500 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200">
+                Add Packages to get started
+              </a>
+            </p>
+            
           </div>
         </div>
         
@@ -101,16 +119,21 @@
       console.error(`Network Error: ${error}`)
     }
 
-  }
 
+  }
   function removeItem(cartItemId) {
-    fetch(`/remove-cart-item/${cartItemId}/`, {
-      method: 'GET'
+    fetch(`${window.location.origin}/cart/remove/${cartItemId}`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": 'application/x-www-form-urlencoded',
+        "X-CSRFToken": getCSRFToken(),
+      }
     })
     .then(response => response.json())
     .then(data => {
       if (data.success) {
         document.getElementById(`cart-item-${cartItemId}`).remove();
+        document.getElementById('emptycart').classList.remove('hidden')
       }
     })
     .catch(error => console.error('Error:', error));

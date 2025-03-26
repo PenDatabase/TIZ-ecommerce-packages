@@ -58,6 +58,11 @@ class CartItem(models.Model):
     def save(self, *args, **kwargs):
         self.total_price = self.package.price * self.quantity
         return super().save()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['cart', 'package'], name="cart_package_uniqueness")
+        ]
 
 
 
