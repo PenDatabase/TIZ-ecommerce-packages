@@ -14,7 +14,7 @@ class HomeView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['packages'] = Package.objects.annotate(orders_count=models.Count("orders")).order_by("-orders_count")[:3]
+        context['packages'] = Package.objects.annotate(orders_count=models.Count("order_items__order")).order_by("-orders_count")[:3]
         return context
 
     
