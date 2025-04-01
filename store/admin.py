@@ -11,6 +11,11 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ['user__email', 'code']
 
 
+@admin.register(models.OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['package', 'order', 'quantity', 'total_price']
+
+
 @admin.register(models.Package)
 class PackageAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'use_case']
@@ -22,7 +27,9 @@ class PackageAdmin(admin.ModelAdmin):
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'ordered_quantity']
+    search_fields = ['name']
 
+    @admin.display(ordering='ordered_quantity')
     def ordered_quantity(self, product: models.Product):
         return product.ordered_quantity or 0
     
@@ -34,10 +41,12 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.PackageItem)
 class PackageItemAdmin(admin.ModelAdmin):
-    list_display = ['product', 'quantity']
+    list_display = ['product', 'package', 'quantity']
 
 
-admin.site.register(models.Cart)
+@admin.register(models.Cart)
+class Cart(admin.ModelAdmin):
+    list_display = ['user', 'created_at']
+
+
 admin.site.register(models.CartItem)
-admin.site.register(models.OrderItem)
-

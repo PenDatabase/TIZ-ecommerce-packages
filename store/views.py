@@ -1,12 +1,17 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
-from .models import Package, Cart, CartItem
+from .models import Package, Cart, CartItem, Product
 
+
+# Remove testview later
+def testview(request):
+    queryset = Product.objects.aggregate(total=models.Sum('id'))
+    return render(request, 'hello.html', {'collections': queryset})
 
 
 class HomeView(TemplateView):

@@ -7,6 +7,7 @@ app_name = "store"
 
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
+    path("test/", views.testview, name="testview"), # remove later
     path("packages/", views.PackageListView.as_view(), name="package-listing"),
     path("packages/<int:pk>", views.PackageDetailView.as_view(), name="package-detail"),
     path("cart/", views.CartTemplateView.as_view(), name="cart"),
