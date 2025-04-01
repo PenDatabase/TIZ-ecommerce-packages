@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,49 +9,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <style>
-    .fade-in {
-      animation: fadeIn 0.2s ease-in;
-    }
-    .slide-in {
-      animation: slideIn 1s ease-out;
-    }
-    .hover-bounce {
-      transition: transform 0.2s;
-    }
-    .hover-bounce:hover {
-      transform: scale(1.05);
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-    @keyframes slideIn {
-      from {
-        transform: translateY(50px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-  </style>
-  <script>
-    // Add fade-in animation to package cards
-    document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('.package-card');
-      cards.forEach((card, index) => {
-        setTimeout(() => {
-          card.classList.add('fade-in');
-        }, index * 200);
-      });
-    });
-  </script> 
+  <script src="{% static 'store/js/base.js' %}"></script> 
+  <link rel="stylesheet" href="{% static 'store/css/base.css' %}">
+
+  {% block styling %}
+  {% endblock styling %}
+  
   {% block topjs %}
   {% endblock topjs %}
 
@@ -124,6 +89,10 @@
   <div class="w-full px-4 mt-20">
     {% block body %}
     {% endblock body %}
+
+     <!-- Notification Container -->
+     <div id="notification" class="fixed top-20 border-[2px] border-black/50 right-5 bg-white text-black px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 ease-in-out">
+    </div>
   </div>
     
 

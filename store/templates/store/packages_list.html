@@ -1,42 +1,15 @@
 {% extends 'store/base.html' %}
 
+{% load static %}
+
+{% block styling %}
+  <link rel="stylesheet" href="{% static 'store/css/packages_list.css' %}">
+{% endblock styling %}
+
 {% block topjs %}
-  <script>
-    function searchPackages() {
-      const searchInput = document.getElementById('search-bar').value.toLowerCase();
-      const packageCards = document.querySelectorAll('.package-card');
-      let anyVisible = false;
-
-      packageCards.forEach(card => {
-        const packageName = card.querySelector('h3').textContent.toLowerCase();
-
-        if (packageName.includes(searchInput)) {
-          card.style.display = 'block';
-          anyVisible = true;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      // Show/hide the "Press Enter for more results" message
-      const enterMessage = document.getElementById('enter-message');
-      enterMessage.style.display = anyVisible ? 'none' : 'flex';
-      enterMessage.classList.toggle('fade-in', !anyVisible);
-    }
-  </script>
-
-  <style>
-    .fade-in {
-      opacity: 0;
-      animation: fadeIn 0.4s ease-in-out forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <script src="{% static 'store/js/packages_list.js' %}"></script>
 {% endblock topjs %}
+
 
 {% block body %}
   <!-- Packages Section -->
@@ -86,7 +59,7 @@
                     <p class="text-sm text-green-500 font-medium mb-4">Best for: {{ package.use_case }}</p>
                     <span class="text-blue-600 font-bold text-lg">&#8358;{{ package.price }}</span>
                     <div class="flex justify-between items-center mt-4">
-                      <button class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500" onclick="addToCart(`{{ package.pk }}`)">Add to Cart</button>
+                      <button id="add-to-cart" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500" data-package-pk="{{ package.pk }}">Add to Cart</button>
                       <a href="{% url 'store:package-detail' package.pk %}" class="text-blue-600 hover:underline">View Details</a>
                     </div>
                 </div>
@@ -100,60 +73,4 @@
     {% csrf_token %}
   </form>
 
-  <!-- Notification Container -->
-  <div id="cart-notification" class="fixed top-20 border-[2px] border-black/50 right-5 bg-white text-black px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 ease-in-out">
-    ✅ Package added to cart!
-  </div>
-
-
-  <script>
-    function showNotification() {
-  const notification = document.getElementById("cart-notification");
-  notification.style.display = "block";  // Ensure it's visible
-  notification.classList.remove("opacity-0");
-  notification.classList.add("opacity-100");
-
-  setTimeout(() => {
-    notification.classList.remove("opacity-100");
-    notification.classList.add("opacity-0");
-
-    setTimeout(() => {
-      notification.style.display = "none"; // Hide it after fade-out
-    }, 500);
-  }, 3000);
-}
-
-    function getCSRFToken(){
-      return document.querySelector('[name=csrfmiddlewaretoken]').value
-    }
-
-    async function addToCart(package_pk) {
-      try {
-        const response = await fetch(`${window.location.origin}/cart/add/${package_pk}`, {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCSRFToken(),
-          }
-        });
-
-        if (!response.ok){
-          throw new Error(`Status: ${response.status}`)
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          showNotification();
-        } else if (data.redirect) {
-          window.location.href = data.redirect;
-        } else {
-          console.error("Error:", data.detail);
-        }
-      } catch (error) {
-        console.error("Network error:", error);
-      }
-    }
-
-  </script>
 {% endblock body %}
