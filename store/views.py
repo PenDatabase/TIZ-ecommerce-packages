@@ -1,11 +1,12 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, ListView, UpdateView
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.db import models
-from .models import Package, Cart, CartItem, Product
+from .models import Order, OrderItem, Package, Cart, CartItem, Product
+from .payments import create_paystack_payment
 
 
 # Remove testview later
@@ -56,8 +57,10 @@ class CartTemplateView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cart"], created = Cart.objects.prefetch_related("cart_items__package").annotate(
-            subtotal=models.Sum("cart_items__total_price"),
-            total_price=models.F("subtotal") + 1000).get_or_create(user=self.request.user)
+                subtotal=models.Sum("cart_items__total_price")
+            ).annotate(
+                total_price=models.F("subtotal") + 1000
+            ).get_or_create(user=self.request.user)
         return context
     
 
@@ -66,11 +69,6 @@ class CartTemplateView(LoginRequiredMixin, TemplateView):
 class UpdateCartItemQuantityView(LoginRequiredMixin, UpdateView):
     model = CartItem
     fields = ["quantity"]
-
-    def get_object(self, queryset = None):
-        pk = self.kwargs.get("pk")
-        return get_object_or_404(CartItem, pk=pk)
-    
 
     def post(self, request, *args, **kwargs):
         cart_item = self.get_object()
@@ -82,9 +80,11 @@ class UpdateCartItemQuantityView(LoginRequiredMixin, UpdateView):
             cart_item.quantity -= 1
 
         cart_item.save()
-        cart= Cart.objects.filter(user=self.request.user).annotate(
-            subtotal=models.Sum("cart_items__total_price"),
-            total_price=models.F("subtotal") + 1000).values("subtotal", "total_price").first()
+        cart= Cart.objects.annotate(
+                subtotal=models.Sum("cart_items__total_price")
+            ).annotate(
+                total_price=models.F("subtotal") + 1000
+            ).values("subtotal", "total_price").get(user=self.request.user)
 
 
         return JsonResponse({
@@ -134,4 +134,44 @@ def remove_from_cart(request, cartitem_pk):
                 "success": False,
                 "detail": "Cartitem not found"
             })
-        
+
+
+@login_required
+def checkout_cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+
+    order = Order.objects.create(
+        user=request.user,
+    )
+
+    order_items = [
+        OrderItem(
+            order=order,
+            package=cart_item.package,
+            total_price=cart_item.total_price,
+            quantity=cart_item.quantity
+        )
+        for cart_item in cart.cart_items.all()
+    ]
+
+    OrderItem.objects.bulk_create(order_items)
+
+    order_price = Order.objects.annotate(
+                subtotal=models.Sum("order_items__total_price")
+            ).annotate(
+                total_price=models.F("subtotal") + 1000
+            ).values("total_price").get(pk=order.pk)
+    
+    
+    payment_url = create_paystack_payment(order_price["total_price"], request.user.email, order.id)
+    return redirect(payment_url)
+
+
+
+class OrderHistoryView(ListView):
+    template_name = "store/order_history.html"
+    context_object_name = "orders"
+
+    def get_queryset(self):
+        return Order.objects.prefetch_related("order_items__package").filter(user=self.request.user).all()
+    

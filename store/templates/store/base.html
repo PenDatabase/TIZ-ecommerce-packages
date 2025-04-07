@@ -24,7 +24,7 @@
   <!-- Navbar -->
   <nav class="bg-white shadow-md fixed top-0 w-full z-50">
     <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <a href="{% url 'store:home' %}" class="text-2xl font-bold text-blue-600">Admissions</a>
+        <a href="{% url 'store:home' %}" class="text-2xl font-bold text-blue-600">CU Packages</a>
         
         <!-- Desktop Navigation -->
         <ul class="hidden md:flex space-x-6">
@@ -58,7 +58,7 @@
                     <div x-show="open" @click.outside="open = false"
                         class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50"
                         x-transition>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Order History</a>
+                        <a href="{% url 'store:order-history' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Order History</a>
                         <hr class="border-gray-200">
                         <form action="{% url 'logout' %}" method="post" class="block">
                             {% csrf_token %}
@@ -91,7 +91,7 @@
     {% endblock body %}
 
      <!-- Notification Container -->
-     <div id="notification" class="fixed top-20 border-[2px] border-black/50 right-5 bg-white text-black px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 ease-in-out">
+     <div id="notification" class="fixed bg-green-500 top-20 border-[2px] border-white right-5  text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 ease-in-out">
     </div>
   </div>
     

@@ -5,7 +5,7 @@ from . import models
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['code', 'user__email', 'date']
+    list_display = ['code', 'user__email', 'created_at']
     list_per_page = 10
     search_fields = ['user__email', 'code']
     readonly_fields = ['code'] # Make code Read Only field so as to prevent from being edited

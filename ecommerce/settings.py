@@ -26,6 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^_(te(7_tzjtdx)^hx4lf9^=9^-60y=y%fcfg#18_hku8m3(mn'
 
+PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
+PAYSTACK_BASE_URL = os.getenv("PAYSTACK_BASE_URL")
+WEBSITE_DOMAIN = os.getenv("WEBSITE_DOMAIN")
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

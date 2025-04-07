@@ -1,0 +1,96 @@
+{% load mul_filters %}
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Your CU Packages Order</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+
+  <!-- MAIN EMAIL CONTAINER -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f4f4f4">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+
+        <!-- EMAIL CONTENT CONTAINER -->
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 600px; border-radius: 10px;">
+
+          <!-- LOGO -->
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <img src="https://yourcompany.com/logo.png" width="150" alt="CU Packages Logo">
+            </td>
+          </tr>
+
+          <!-- HEADER -->
+          <tr>
+            <td align="center" style="padding: 10px 20px;">
+              <h2 style="color: #333; font-family: Arial, sans-serif;">Hi {{ user.first_name }},</h2>
+              <p style="color: #555; font-family: Arial, sans-serif; font-size: 16px;">
+                🎉 Thank you for your order <strong>{{ order.code }}</strong> on CU Packages!
+              </p>
+            </td>
+          </tr>
+
+          <!-- ORDER DETAILS -->
+          <tr>
+            <td style="padding: 0 20px 20px 20px;">
+              <h3 style="font-family: Arial, sans-serif; color: #007bff;">📦 Order Summary</h3>
+
+              {% for order_item in order.order_items.all %}
+                <div style="margin-bottom: 20px;">
+                  <h4 style="margin: 5px 0; font-family: Arial, sans-serif; color: #222;">Package: {{ order_item.package.name }}</h4>
+                  <p style="margin: 5px 0; font-family: Arial, sans-serif;">Quantity Ordered: {{ order_item.quantity }}</p>
+                  
+                  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; margin-top: 10px;">
+                    <thead>
+                      <tr style="background-color: #f0f0f0;">
+                        <th style="padding: 8px; border: 1px solid #ddd;">Product</th>
+                        <th style="padding: 8px; border: 1px solid #ddd;">Qty per Package</th>
+                        <th style="padding: 8px; border: 1px solid #ddd;">Total Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for package_item in order_item.package.package_items.all %}
+                        <tr>
+                          <td style="padding: 8px; border: 1px solid #ddd;">{{ package_item.product.name }}</td>
+                          <td style="padding: 8px; border: 1px solid #ddd;">{{ package_item.quantity }}</td>
+                          <td style="padding: 8px; border: 1px solid #ddd;">{{ package_item.quantity|multiply:order_item.quantity }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% endfor %}
+            </td>
+          </tr>
+
+          <!-- PAYMENT INFO -->
+          <tr>
+            <td style="padding: 0 20px 20px 20px;">
+              <h3 style="font-family: Arial, sans-serif; color: #007bff;">💳 Payment Details</h3>
+              <p style="font-family: Arial, sans-serif;">Reference: <strong>{{ payment.reference }}</strong></p>
+              <p style="font-family: Arial, sans-serif;">Amount Paid: <strong>₦{{ payment.amount }}</strong></p>
+              <p style="font-family: Arial, sans-serif;">Status: <strong>{{ payment.status }}</strong></p>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td align="center" style="padding: 20px; font-size: 12px; font-family: Arial, sans-serif; color: #999;">
+              &copy; 2025 CU Packages. All rights reserved.
+            </td>
+          </tr>
+
+        </table>
+        <!-- END OF EMAIL CONTENT -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- END OF MAIN EMAIL CONTAINER -->
+
+</body>
+</html>
+{% endautoescape %}

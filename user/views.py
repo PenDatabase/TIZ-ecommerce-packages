@@ -35,7 +35,7 @@ def send_activation_email(user, request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = account_activation_token.make_token(user)
 
-    mail_subject = 'Activate your Account | Admissions'
+    mail_subject = 'Activate your Account | CU Packages'
     html_message = render_to_string('registration/emails/activate_email.html', {
         'user': user,
         'domain': domain,

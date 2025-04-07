@@ -67,9 +67,16 @@ def generate_order_code():
     return f"ORD-{datetime.now().strftime('%S%d%m%y')}-{uuid.uuid4().hex[:6].upper()}"
 
 class Order(models.Model):
+    NOT_YET_DELIVERED = "NOT YET DELIVERED"
+    DELIVERED = "DELIVERED"
+    STATUS_CHOICES = {
+        NOT_YET_DELIVERED: NOT_YET_DELIVERED,
+        DELIVERED: DELIVERED
+    }
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="orders")
     code = models.CharField(max_length=19, unique=True, blank=True, default=generate_order_code)
-    date = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    delivery_status = models.CharField(max_length=17, choices=STATUS_CHOICES, default=NOT_YET_DELIVERED)
 
     def __str__(self):
         return self.code
@@ -78,7 +85,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
     package = models.ForeignKey(Package, on_delete=models.PROTECT, related_name="order_items")
-    total_price = models.IntegerField()
+    total_price = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField(default=1)
 
     def save(self, *args, **kwargs):
@@ -92,15 +99,16 @@ class OrderItem(models.Model):
 
 
 class Payment(models.Model):
-    PENDING = "pending"
-    COMPLETED = "completed"
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETE"
     PAYMENT_STATUS = {
-        "pending": PENDING,
-        "completed": COMPLETED
+        PENDING :"PENDING",
+        COMPLETED :"COMPLETED"
     }
     user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="payments", null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name="payments", null=True)
-    reference = models.CharField(max_length=255)
+    amount = models.PositiveIntegerField()
+    reference = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=9, default=PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True)

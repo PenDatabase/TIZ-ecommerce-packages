@@ -1,9 +1,7 @@
 from django.urls import path
-from . import views
-
+from . import views, payments
 
 app_name = "store"
-
 
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
@@ -12,6 +10,9 @@ urlpatterns = [
     path("packages/<int:pk>", views.PackageDetailView.as_view(), name="package-detail"),
     path("cart/", views.CartTemplateView.as_view(), name="cart"),
     path("cart/add/<int:package_pk>", views.add_to_cart, name="add-to-cart"),
+    path("cart/checkout/", views.checkout_cart, name="cart-checkout"),
     path("cart/remove/<int:cartitem_pk>", views.remove_from_cart, name="remove-from-cart"),
-    path("cartitem/update/<int:pk>", views.UpdateCartItemQuantityView.as_view(), name="update-cartitem-quantity")
+    path("cartitem/update/<int:pk>", views.UpdateCartItemQuantityView.as_view(), name="update-cartitem-quantity"),
+    path("order_history", views.OrderHistoryView.as_view(), name="order-history"),
+    path("payment/verify/<int:order_id>", payments.verify_paystack_payment_view, name="verify-paystack-payment"),
 ]
