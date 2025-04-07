@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
-from .models import Order, Payment
+from .models import CartItem, Order, Payment
 
 User = get_user_model()
 
@@ -77,5 +77,11 @@ def verify_paystack_payment_view(request, order_id):
                                        [request.user.email])
         email.attach_alternative(html_message, 'text/html')
         email.send()
-    return JsonResponse({"detail": "It worked"})
+
+        # Remove All CartItems from cart
+        cart_items = CartItem.objects.filter(cart__user=request.user).all()
+        cart_items.delete()
+        return JsonResponse({"detail": "It worked"})
+    
+    return JsonResponse({"detail": "Payment failed to go through"})
     
