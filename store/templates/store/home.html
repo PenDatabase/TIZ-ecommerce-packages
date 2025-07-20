@@ -45,7 +45,7 @@
         
         {% for package in packages %}
             <div class="package-card bg-white rounded-lg shadow-lg hover-bounce fade-in">
-                <img src="" alt="Fresher's Starter Pack" class="w-full h-48 object-cover">
+                <img src="https://raw.githubusercontent.com/QuantumLeapCU/Logos/main/logo.png" alt="Fresher's Starter Pack" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <a href="{% url 'store:package-detail' package.pk %}">
                         <h3 class="text-lg underline hover:text-blue-600 font-semibold mb-2">{{ package.name }}</h3>
