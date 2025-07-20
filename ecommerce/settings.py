@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-^_(te(7_tzjtdx)^hx4lf9^=9^-60y=y%fcfg#18_hku8m3(mn')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
 PAYSTACK_BASE_URL = os.getenv("PAYSTACK_BASE_URL")
@@ -44,7 +44,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
-ALLOWED_HOSTS = ['*']  # Railway will provide the domain
+ALLOWED_HOSTS = ['*']  # Digital Ocean will provide the domain
 
 INTERNAL_IPS = [
     "127.0.0.1"

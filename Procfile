@@ -1,1 +1,1 @@
-web: gunicorn ecommerce.wsgi --log-file -
+web: gunicorn --worker-tmp-dir /dev/shm ecommerce.wsgi
