@@ -1,3 +1,4 @@
+from django.shortcuts import render
 import requests
 from django.http import JsonResponse
 from django.utils import timezone
@@ -65,7 +66,8 @@ def verify_paystack_payment_view(request, order_id):
         # Send Mail to User with Order details
         order = Order.objects.prefetch_related('order_items__package__package_items__product').get(pk=order_id)
         mail_subject = "Order Details"
-        html_message = render_to_string("store/emails/order_detail.html", {
+        html_message = render_to_string("store/emails/order_detail_email.html", {
+            "user": request.user,
             "order": order,
             "payment": payment
         })
@@ -81,7 +83,13 @@ def verify_paystack_payment_view(request, order_id):
         # Remove All CartItems from cart
         cart_items = CartItem.objects.filter(cart__user=request.user).all()
         cart_items.delete()
-        return JsonResponse({"detail": "It worked"})
+        return render(request, 
+                      'store/order-successful.html', 
+                       {
+                          'order': order, 
+                          'payment': payment
+                        }
+                    )
     
     return JsonResponse({"detail": "Payment failed to go through"})
     

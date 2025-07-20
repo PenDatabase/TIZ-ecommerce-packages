@@ -1,18 +1,19 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.contrib import messages
 from django.views.generic import TemplateView, DetailView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db import models
-from .models import Order, OrderItem, Package, Cart, CartItem, Product
+from django.db.models.functions import Coalesce
+from .models import Order, OrderItem, Package, Cart, CartItem
 from .payment_views import create_paystack_payment
 
 
 # Remove testview later
 def testview(request):
-    queryset = Product.objects.aggregate(total=models.Sum('id'))
-    return render(request, 'hello.html', {'collections': queryset})
+    return render(request, 'test.html', {'collections': None})
 
 
 class HomeView(TemplateView):
@@ -57,7 +58,7 @@ class CartTemplateView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cart"], created = Cart.objects.prefetch_related("cart_items__package").annotate(
-                subtotal=models.Sum("cart_items__total_price")
+                subtotal=Coalesce(models.Sum("cart_items__total_price"), models.Value(0))
             ).annotate(
                 total_price=models.F("subtotal") + 1000
             ).get_or_create(user=self.request.user)
@@ -81,7 +82,7 @@ class UpdateCartItemQuantityView(LoginRequiredMixin, UpdateView):
 
         cart_item.save()
         cart= Cart.objects.annotate(
-                subtotal=models.Sum("cart_items__total_price")
+                subtotal=Coalesce(models.Sum("cart_items__total_price"), models.Value(0))
             ).annotate(
                 total_price=models.F("subtotal") + 1000
             ).values("subtotal", "total_price").get(user=self.request.user)
@@ -140,6 +141,10 @@ def remove_from_cart(request, cartitem_pk):
 def checkout_cart(request):
     cart = get_object_or_404(Cart, user=request.user)
 
+    if not cart.cart_items.exists():
+       messages.error(request, "Your cart is empty")
+       return redirect('store:cart')
+    
     order = Order.objects.create(
         user=request.user,
     )
@@ -156,20 +161,19 @@ def checkout_cart(request):
 
     OrderItem.objects.bulk_create(order_items)
 
-    order_price = Order.objects.annotate(
-                subtotal=models.Sum("order_items__total_price")
+    retrieved_order = Order.objects.filter(pk=order.pk).annotate(
+                subtotal=Coalesce(models.Sum("order_items__total_price"), models.Value(0))
             ).annotate(
                 total_price=models.F("subtotal") + 1000
-            ).values("total_price").get(pk=order.pk)
+            ).values("total_price").get()
     
-    
-    payment_url = create_paystack_payment(order_price["total_price"], request.user.email, order.id)
+    payment_url = create_paystack_payment(retrieved_order["total_price"], request.user.email, order.id)
     return redirect(payment_url)
 
 
 
-class OrderHistoryView(ListView):
-    template_name = "store/order_history.html"
+class OrderListView(ListView):
+    template_name = "store/order-listing.html"
     context_object_name = "orders"
 
     def get_queryset(self):
