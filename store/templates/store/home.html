@@ -20,10 +20,10 @@
         <div class="flex justify-center relative">
         <div class="relative w-3/4 md:w-full overflow-hidden rounded-lg shadow-lg">
             <!-- Carousel Images -->
-            <div id="carousel-images" class="flex transition-transform duration-500">
-            <img src="image1.jpg" alt="CU Packages 1" class="w-full">
-            <img src="image2.jpg" alt="CU Packages 2" class="w-full">
-            <img src="image3.jpg" alt="CU Packages 3" class="w-full">
+            <div id="carousel-images" class="flex transition-transform duration-500 h-64 md:h-80 lg:h-96">
+            <img src="https://i.pinimg.com/736x/8b/72/6e/8b726ef9d7b7bdd3c123a004033e61c8.jpg" alt="CU Packages 1" class="w-full h-full object-cover flex-shrink-0">
+            <img src="https://i.pinimg.com/736x/f8/43/6d/f8436d83ba38e7c93cbeefdaae88157c.jpg" alt="CU Packages 2" class="w-full h-full object-cover flex-shrink-0">
+            <img src="https://i.pinimg.com/236x/d3/41/5f/d3415faeb3c23bc13c3a6d421b877b97.jpg" alt="CU Packages 3" class="w-full h-full object-cover flex-shrink-0">
             </div>
         </div>
         <!-- Carousel Controls -->
@@ -45,7 +45,7 @@
         
         {% for package in packages %}
             <div class="package-card bg-white rounded-lg shadow-lg hover-bounce fade-in">
-                <img src="https://raw.githubusercontent.com/QuantumLeapCU/Logos/main/logo.png" alt="Fresher's Starter Pack" class="w-full h-48 object-cover">
+                <img src="https://raw.githubusercontent.com/QuantumLeapCU/Logos/main/logo.png" alt="Fresher's Starter Pack" class="w-405 h-489 object-cover">
                 <div class="p-6">
                     <a href="{% url 'store:package-detail' package.pk %}">
                         <h3 class="text-lg underline hover:text-blue-600 font-semibold mb-2">{{ package.name }}</h3>
