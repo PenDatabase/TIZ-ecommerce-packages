@@ -6,8 +6,7 @@ __pycache__/
 env/
 venv/
 .Python
-*.db
-*.sqlite3
+
 
 # Environment variables
 .env
@@ -24,8 +23,6 @@ static_root/
 *.pyc
 *.pyo
 __pycache__/
-*.sqlite3
-db.sqlite3
 
 # Virtualenv
 venv/
