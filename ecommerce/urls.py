@@ -18,6 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -29,3 +30,6 @@ urlpatterns = [
 
 if settings.DEBUG == True:
     urlpatterns += debug_toolbar_urls()
+
+# Serve static files in production
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

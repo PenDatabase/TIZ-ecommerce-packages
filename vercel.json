@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "ecommerce/wsgi.py",
@@ -7,19 +8,23 @@
         "maxLambdaSize": "15mb", 
         "runtime": "python3.9"
       }
+    },
+    {
+      "src": "build.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "dest": "/staticfiles/$1"
     },
     {
       "src": "/(.*)",
       "dest": "ecommerce/wsgi.py"
     }
-  ],
-  "env": {
-    "DJANGO_SETTINGS_MODULE": "ecommerce.settings"
-  }
+  ]
 }
