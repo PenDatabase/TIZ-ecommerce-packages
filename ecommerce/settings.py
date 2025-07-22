@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -47,7 +48,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
-ALLOWED_HOSTS = ['*']  # Allow all hosts for Vercel deployment
+ALLOWED_HOSTS = ['.up.railway.app']  # Allow all hosts on railway for deployment
 
 INTERNAL_IPS = [
     "127.0.0.1"
@@ -109,12 +110,33 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+# Default to SQLite for development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Database configuration for Railway deployment
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+if DATABASE_URL:
+    # Production database (Railway PostgreSQL)
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+    print(f"Connected to database: {DATABASES['default']['ENGINE']}")
+else:
+    # Development database (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    print("Using SQLite database")
 
 
 # Password validation
@@ -171,3 +193,27 @@ AUTH_USER_MODEL = "user.StoreUser"
 LOGIN_REDIRECT_URL = "store:home"
 LOGOUT_REDIRECT_URL = "store:home"
 LOGIN_URL="user:login"
+
+# Railway-specific settings
+if os.getenv('RAILWAY_ENVIRONMENT'):
+    # Production settings for Railway
+    DEBUG = False
+    
+    # Security settings for production
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Session and CSRF settings
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # Allowed hosts for Railway
+    ALLOWED_HOSTS = ['.railway.app', '.up.railway.app']
+    
+    # Add your custom domain if you have one
+    custom_domain = os.getenv('WEBSITE_DOMAIN')
+    if custom_domain:
+        ALLOWED_HOSTS.append(custom_domain.replace('https://', '').replace('http://', ''))
