@@ -3,87 +3,231 @@
 {% load static %}
 
 {% block body %}
-  <!-- Cart Section -->
-  <section class="py-16 mt-20">
+  <!-- Modern Cart Header -->
+  <section class="py-16 relative overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+      <div class="absolute top-10 right-10 w-64 h-64 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-float"></div>
+    </div>
+    
+    <div class="relative container mx-auto px-6 text-center">
+      <div class="space-y-6 fade-in">
+        <!-- Badge -->
+        <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full">
+          <i class="fas fa-shopping-cart text-blue-600"></i>
+          <span class="text-sm font-semibold text-gray-700">Shopping Cart</span>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl font-black">
+          <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">
+            Your Cart
+          </span>
+        </h1>
+        
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Review your selected packages before proceeding to checkout
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Content Section -->
+  <section class="py-12 relative">
     <div class="container mx-auto px-6">
-      <h2 class="text-3xl font-bold text-center mb-8">Your Cart</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-12">
+        
         <!-- Cart Items Section -->
-        <div class="col-span-2">
-          <div class="max-h-96 overflow-y-auto p-4 border border-gray-200 rounded-xl bg-white shadow-md space-y-4 custom-scrollbar">
-            {% for cart_item in cart.cart_items.all %}
-              <div id="cart-item-{{ cart_item.id }}" class="relative flex items-center justify-between bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300">
-                <div class="flex items-center space-x-4 w-full">
-                  <img src="fresher-pack.jpg" alt="Fresher's Starter Pack" class="w-16 h-16 rounded-lg object-cover border border-gray-300">
-                  <div class="w-full">
-                    <div class="flex justify-between items-center">
-                      <h3 class="text-md font-semibold text-gray-800">{{ cart_item.package.name }}</h3>
-                      <button class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-sm hover:bg-red-600 transition-all duration-200" onclick="removeItem('{{ cart_item.pk }}')">
-                        X
-                      </button>
+        <div class="xl:col-span-2">
+          <div class="modern-card p-6 rounded-3xl">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-bold text-gray-800">Cart Items</h2>
+              {% if cart.cart_items.exists %}
+                <span class="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+                  {{ cart.cart_items.count }} item{{ cart.cart_items.count|pluralize }}
+                </span>
+              {% endif %}
+            </div>
+            
+            <div class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+              {% for cart_item in cart.cart_items.all %}
+                <div id="cart-item-{{ cart_item.id }}" class="group relative bg-gradient-to-r from-gray-50 to-blue-50/50 rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <!-- Remove button -->
+                  <button class="absolute top-4 right-4 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 transform scale-0 group-hover:scale-100" 
+                          onclick="removeItem('{{ cart_item.pk }}')" title="Remove item">
+                    <i class="fas fa-times text-sm"></i>
+                  </button>
+                  
+                  <div class="flex items-center space-x-6">
+                    <!-- Package Image -->
+                    <div class="flex-shrink-0">
+                      <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg">
+                        <img src="https://raw.githubusercontent.com/QuantumLeapCU/Logos/main/logo.png" 
+                             alt="{{ cart_item.package.name }}" 
+                             class="w-12 h-12 object-cover rounded-lg">
+                      </div>
                     </div>
-                    <!-- Original Price -->
-                    <p class="text-sm text-gray-500">Unit Price: &#8358;{{ cart_item.package.price }}</p>
-                    <!-- Quantity Controls -->
-                    <div class="flex items-center space-x-2 mt-2">
-                      <button class="bg-gray-300 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-400 transition-all duration-200" onclick="updateQuantity('{{ cart_item.pk }}', -1)">−</button>
-                      <span id="quantity-{{ cart_item.id }}" class="text-lg font-medium">{{ cart_item.quantity }}</span>
-                      <button class="bg-gray-300 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-400 transition-all duration-200" onclick="updateQuantity('{{ cart_item.pk }}', 1)">+</button>
+                    
+                    <!-- Package Details -->
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                        {{ cart_item.package.name }}
+                      </h3>
+                      
+                      <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                        <span class="flex items-center">
+                          <i class="fas fa-tag mr-1 text-blue-500"></i>
+                          Unit: &#8358;{{ cart_item.package.price }}
+                        </span>
+                        <span class="flex items-center">
+                          <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                          {{ cart_item.package.use_case }}
+                        </span>
+                      </div>
+                      
+                      <!-- Quantity Controls -->
+                      <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-3 bg-white rounded-xl p-1 shadow-md">
+                          <button class="w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center justify-center transition-all duration-300" 
+                                  onclick="updateQuantity('{{ cart_item.pk }}', -1)">
+                            <i class="fas fa-minus text-sm"></i>
+                          </button>
+                          
+                          <span id="quantity-{{ cart_item.id }}" class="text-lg font-bold text-gray-800 min-w-[2rem] text-center">
+                            {{ cart_item.quantity }}
+                          </span>
+                          
+                          <button class="w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center justify-center transition-all duration-300" 
+                                  onclick="updateQuantity('{{ cart_item.pk }}', 1)">
+                            <i class="fas fa-plus text-sm"></i>
+                          </button>
+                        </div>
+                        
+                        <!-- Total Price -->
+                        <div class="ml-auto">
+                          <p id="price-{{ cart_item.id }}" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            &#8358;{{ cart_item.total_price }}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <!-- Total Price -->
-                <p id="price-{{ cart_item.id }}" class="text-lg font-bold text-blue-600">&#8358;{{ cart_item.total_price }}</p>
-              </div>
-            {% endfor %}
+              {% endfor %}
 
-            <!-- If cart is empty -->
-            <p id="emptycart" class="flex flex-col items-center justify-center text-gray-600 {% if cart.cart_items.exists %} hidden {% endif %} p-8 text-center">
-              <!-- Blue Cart Icon -->
-              <svg class="w-16 h-16 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l1.5 10.5a2 2 0 002 1.5h9a2 2 0 002-1.5L19 7H6"></path>
-                <circle cx="9" cy="19" r="2"></circle>
-                <circle cx="15" cy="19" r="2"></circle>
-              </svg>
-            
-              <!-- Cart Empty Message -->
-              <span class="text-2xl font-semibold">Your cart is empty</span>
-            
-              <!-- Button to Add More Items -->
-              <a href="{% url 'store:package-listing' %}"
-                class="mt-4 px-5 py-2 bg-blue-500 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200">
-                Add Packages to get started
-              </a>
-            </p>
-            
+              <!-- Empty Cart State -->
+              <div id="emptycart" class="{% if cart.cart_items.exists %}hidden{% endif %} text-center py-16">
+                <div class="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-shopping-cart text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Your cart is empty</h3>
+                <p class="text-gray-500 mb-8">Looks like you haven't added any packages yet. Start shopping to fill up your cart!</p>
+                <a href="{% url 'store:package-listing' %}" 
+                   class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group">
+                  <i class="fas fa-shopping-bag"></i>
+                  <span>Start Shopping</span>
+                  <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
         
-        
-        
-        
-
-        <!-- Summary Section -->
-        <div class="bg-gray-100 rounded-lg shadow-lg p-6 fade-in">
-          <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
-          <div class="flex justify-between mb-2">
-            <p>Subtotal:</p>
-            <p id="cart-subtotal" class="font-semibold">&#8358;{{ cart.subtotal }}</p>
+        <!-- Enhanced Summary Section -->
+        <div class="xl:col-span-1">
+          <div class="modern-card p-8 rounded-3xl sticky top-8">
+            <div class="space-y-6">
+              <!-- Header -->
+              <div class="text-center">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Order Summary</h3>
+                <div class="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+              </div>
+              
+              <!-- Summary Details -->
+              <div class="space-y-4">
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-gray-50 to-blue-50/50 rounded-xl">
+                  <span class="text-gray-600 font-medium">Subtotal:</span>
+                  <span id="cart-subtotal" class="font-bold text-gray-800">&#8358;{{ cart.subtotal }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50/50 rounded-xl">
+                  <span class="text-gray-600 font-medium flex items-center">
+                    <i class="fas fa-shipping-fast mr-2 text-green-500"></i>
+                    Shipping:
+                  </span>
+                  <span class="font-bold text-gray-800">&#8358;1,000</span>
+                </div>
+                
+                <!-- Discount section (if applicable) -->
+                <div class="p-3 bg-gradient-to-r from-purple-50 to-pink-50/50 rounded-xl border-2 border-dashed border-purple-200">
+                  <div class="flex items-center space-x-2 mb-2">
+                    <i class="fas fa-tag text-purple-500"></i>
+                    <span class="text-sm font-medium text-gray-600">Promo Code</span>
+                  </div>
+                  <div class="flex space-x-2">
+                    <input type="text" placeholder="Enter code" class="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button class="px-4 py-2 bg-purple-500 text-white text-sm font-semibold rounded-lg hover:bg-purple-600 transition-colors">
+                      Apply
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Total -->
+                <div class="border-t-2 border-gray-200 pt-4">
+                  <div class="flex justify-between items-center p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl text-white">
+                    <span class="text-lg font-bold">Total:</span>
+                    <span id="cart-total_price" class="text-2xl font-black">&#8358;{{ cart.total_price }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="space-y-3">
+                {% if cart.cart_items.exists %}
+                  <a href="{% url 'store:cart-checkout' %}" 
+                     class="group block w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-center rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <span class="flex items-center justify-center space-x-2">
+                      <i class="fas fa-credit-card"></i>
+                      <span>Proceed to Checkout</span>
+                      <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                  </a>
+                {% endif %}
+                
+                <a href="{% url 'store:package-listing' %}" 
+                   class="block w-full py-3 border-2 border-gray-300 text-gray-700 font-semibold text-center rounded-2xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300">
+                  <span class="flex items-center justify-center space-x-2">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Continue Shopping</span>
+                  </span>
+                </a>
+              </div>
+              
+              <!-- Security badges -->
+              <div class="pt-4 border-t border-gray-200">
+                <div class="text-center text-xs text-gray-500 mb-3">
+                  <i class="fas fa-shield-alt mr-1"></i>
+                  Secure checkout with 256-bit SSL encryption
+                </div>
+                <div class="flex justify-center space-x-4 opacity-60">
+                  <div class="w-8 h-6 bg-gray-300 rounded flex items-center justify-center">
+                    <i class="fas fa-credit-card text-xs"></i>
+                  </div>
+                  <div class="w-8 h-6 bg-gray-300 rounded flex items-center justify-center">
+                    <i class="fab fa-paypal text-xs"></i>
+                  </div>
+                  <div class="w-8 h-6 bg-gray-300 rounded flex items-center justify-center">
+                    <i class="fas fa-university text-xs"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex justify-between mb-4">
-            <p>Shipping:</p>
-            <p class="font-semibold">&#8358;1,000</p>
-          </div>
-          <hr class="border-gray-300 mb-4">
-          <div class="flex justify-between text-lg font-bold">
-            <p>Total:</p>
-            <p id="cart-total_price">&#8358;{{ cart.total_price }}</p>
-          </div>
-          <a href="{% url 'store:cart-checkout' %}" class="block mt-6 px-6 py-3 bg-blue-600 text-white font-semibold text-center rounded-lg shadow hover:bg-blue-500">Proceed to Checkout</a>
         </div>
       </div>
     </div>
   </section>
+  
   <form method="post">
     {% csrf_token %}
   </form>

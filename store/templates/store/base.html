@@ -11,6 +11,45 @@
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="{% static 'store/js/base.js' %}"></script> 
   <link rel="stylesheet" href="{% static 'store/css/base.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'gradient': 'gradient 15s ease infinite',
+            'shimmer': 'shimmer 2s linear infinite',
+            'bounce-slow': 'bounce 3s infinite',
+            'pulse-slow': 'pulse 4s infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            gradient: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(100%)' },
+            }
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            'mesh-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'aurora': 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+          }
+        }
+      }
+    }
+  </script>
 
   {% block styling %}
   {% endblock styling %}
@@ -20,130 +59,189 @@
 
   
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md fixed top-0 w-full z-50">
-    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <a href="{% url 'store:home' %}" class="text-2xl font-bold text-blue-600">CU Packages</a>
+<body class="font-inter bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-900 min-h-screen">
+  <!-- Modern Glass Navbar -->
+  <nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-white/30 border-b border-white/20 shadow-lg">
+    <div x-data="{ mobileOpen: false }" class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <!-- Logo with gradient -->
+        <a href="{% url 'store:home' %}" class="group relative">
+          <span class="text-3xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
+            CU Packages
+          </span>
+          <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
+        </a>
         
         <!-- Desktop Navigation -->
-        <ul class="hidden md:flex space-x-6">
-            <li>
-                <a href="{% url 'store:package-listing' %}" 
-                   class="relative text-gray-700 font-medium transition-all duration-300 ease-in-out 
-                   {% if request.path == '/packages/' %} after:scale-x-100 text-blue-600 font-semibold {% endif %}
-                   hover:text-blue-600 after:block after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-blue-600 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300">
-                    Packages
-                </a>
-            </li>
-            <li>
-                <a href="#about" 
-                   class="relative text-gray-700 font-medium transition-all duration-300 ease-in-out hover:text-blue-600 after:block after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-blue-600 after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300">
-                    About
-                </a>
-            </li>
+        <ul class="hidden md:flex items-center space-x-8">
+          <li>
+            <a href="{% url 'store:package-listing' %}" 
+               class="relative font-medium text-gray-700 hover:text-blue-600 transition-all duration-300 group
+               {% if request.path == '/packages/' %} text-blue-600 font-semibold {% endif %}">
+              <span class="relative z-10">Packages</span>
+              <div class="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
+            </a>
+          </li>
+          <li>
+            <a href="#about" 
+               class="relative font-medium text-gray-700 hover:text-blue-600 transition-all duration-300 group">
+              <span class="relative z-10">About</span>
+              <div class="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
+            </a>
+          </li>
         </ul>
 
         <!-- User & Cart Section -->
         <div class="flex items-center space-x-4">
-            {% if user.is_authenticated %}
-                <div x-data="{ open: false }" class="relative flex items-center space-x-3">
-                    <span class="text-lg font-semibold text-gray-800">Hi {{ user.first_name }}</span>
-                    <button @click="open = !open" class="focus:outline-none">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149072.png"
-                             alt="Profile" class="w-10 h-10 rounded-full border">
-                    </button>
-
-                    <!-- Dropdown Menu -->
-                    <div x-show="open" @click.outside="open = false"
-                        class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50"
-                        x-transition>
-                        <a href="{% url 'store:order-listing' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Orders</a>
-                        <hr class="border-gray-200">
-                        <form action="{% url 'logout' %}" method="post" class="block">
-                            {% csrf_token %}
-                            <button type="submit"
-                                class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 font-medium">
-                                Logout
-                            </button>
-                        </form>
-                    </div>
+          {% if user.is_authenticated %}
+            <div x-data="{ open: false }" class="relative flex items-center space-x-3">
+              <div class="hidden sm:block">
+                <span class="text-sm font-medium text-gray-600">Welcome back,</span>
+                <span class="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{{ user.first_name }}</span>
+              </div>
+              
+              <button @click="open = !open" class="focus:outline-none group">
+                <div class="relative">
+                  <img src="https://cdn-icons-png.flaticon.com/512/149/149072.png"
+                       alt="Profile" class="w-12 h-12 rounded-full border-2 border-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full border-2 border-white"></div>
                 </div>
-            {% else %}
-                <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
-                <a href="{% url 'user:register' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 font-medium">Register</a>
-            {% endif %}
-            <a href="{% url 'store:cart' %}" class="text-gray-700 hover:text-blue-600">
-                <i class="fas fa-shopping-cart fa-lg"></i> Cart
-            </a>
+              </button>
 
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-700 focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
+              <!-- Enhanced Dropdown Menu -->
+              <div x-show="open" @click.outside="open = false"
+                  class="absolute right-0 top-full mt-3 w-56 backdrop-blur-xl bg-white/90 border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50"
+                  x-transition:enter="transition ease-out duration-200"
+                  x-transition:enter-start="opacity-0 transform scale-95"
+                  x-transition:enter-end="opacity-100 transform scale-100"
+                  x-transition:leave="transition ease-in duration-150"
+                  x-transition:leave-start="opacity-100 transform scale-100"
+                  x-transition:leave-end="opacity-0 transform scale-95">
+                <div class="p-2">
+                  <a href="{% url 'store:order-listing' %}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all duration-200 group">
+                    <i class="fas fa-shopping-bag mr-3 text-blue-500 group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">My Orders</span>
+                  </a>
+                  <hr class="border-gray-200 my-2">
+                  <form action="{% url 'logout' %}" method="post" class="block">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl font-medium transition-all duration-200 group">
+                      <i class="fas fa-sign-out-alt mr-3 group-hover:scale-110 transition-transform"></i>
+                      <span>Logout</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <a href="{% url 'login' %}" class="font-medium text-gray-700 hover:text-blue-600 transition-colors duration-300 px-4 py-2 rounded-full hover:bg-white/50">Login</a>
+            <a href="{% url 'user:register' %}" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all duration-300">Register</a>
+          {% endif %}
+          
+          <!-- Enhanced Cart Button -->
+          <a href="{% url 'store:cart' %}" class="relative group p-3 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300">
+            <i class="fas fa-shopping-cart text-xl text-gray-700 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300"></i>
+            <!-- Cart badge (you can add dynamic count here) -->
+            <div class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center">
+              <span class="text-xs text-white font-bold">0</span>
+            </div>
+          </a>
+
+          <!-- Mobile Menu Button -->
+          <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-lg hover:bg-white/50 transition-colors duration-300">
+            <i class="fas fa-bars text-xl text-gray-700"></i>
+          </button>
         </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div x-show="mobileOpen" 
+           x-transition:enter="transition ease-out duration-300"
+           x-transition:enter-start="opacity-0 transform -translate-y-2"
+           x-transition:enter-end="opacity-100 transform translate-y-0"
+           class="md:hidden absolute top-full left-0 w-full backdrop-blur-xl bg-white/90 border-b border-white/20 shadow-lg">
+        <div class="p-4 space-y-2">
+          <a href="{% url 'store:package-listing' %}" class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300">Packages</a>
+          <a href="#about" class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300">About</a>
+        </div>
+      </div>
     </div>
   </nav>
 
   
-  <div class="w-full px-4 mt-20">
+  <div class="w-full px-4 pt-24 pb-8">
     {% block body %}
     {% endblock body %}
 
-     <!-- Notification Container -->
-    <div id="notification" class="fixed bg-green-500 top-20 border-[2px] border-white right-5 z-50 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 ease-in-out" style="display: none;">
+    <!-- Enhanced Notification Container -->
+    <div id="notification" class="fixed top-24 right-6 z-50 backdrop-blur-xl bg-green-500/90 border border-white/20 text-white px-6 py-4 rounded-2xl shadow-2xl opacity-0 transition-all duration-500 ease-in-out transform translate-x-full" style="display: none;">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-check-circle text-xl"></i>
+        <span class="font-medium"></span>
+      </div>
     </div>
 
     
     {% if messages %}
-<div class="fixed top-20 right-6 z-50 w-96 space-y-4">
+<div class="fixed top-24 right-6 z-50 w-96 space-y-4">
     {% for message in messages %}
-    <div class="flex items-start gap-3 p-4 rounded-2xl shadow-xl border-l-4 transition-all duration-300
+    <div class="flex items-start gap-4 p-6 rounded-2xl backdrop-blur-xl shadow-2xl border transition-all duration-500 hover:scale-105
         {% if message.tags == 'error' %}
-            bg-red-50 border-red-500 text-red-700
+            bg-red-50/90 border-red-200/50 text-red-800
         {% elif message.tags == 'success' %}
-            bg-green-50 border-green-500 text-green-700
+            bg-emerald-50/90 border-emerald-200/50 text-emerald-800
         {% elif message.tags == 'warning' %}
-            bg-yellow-50 border-yellow-500 text-yellow-700
+            bg-amber-50/90 border-amber-200/50 text-amber-800
         {% else %}
-            bg-blue-50 border-blue-500 text-blue-700
+            bg-blue-50/90 border-blue-200/50 text-blue-800
         {% endif %}
     ">
         <div class="flex-shrink-0 mt-1">
             {% if message.tags == 'error' %}
-            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 
-                1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 
-                1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 
-                00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-            </svg>
+            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 
+                    1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 
+                    1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 
+                    00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+            </div>
             {% elif message.tags == 'success' %}
-            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 
-                000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 
-                7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 
-                0l4-4z" clip-rule="evenodd"/>
-            </svg>
+            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 
+                    000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 
+                    7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 
+                    0l4-4z" clip-rule="evenodd"/>
+                </svg>
+            </div>
             {% elif message.tags == 'warning' %}
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 
-                3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 
-                2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 
-                13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 
-                002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-            </svg>
+            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 
+                    3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 
+                    2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 
+                    13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 
+                    002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+            </div>
             {% else %}
-            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 
-                0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 
-                001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 
+                    0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 
+                    001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+            </div>
             {% endif %}
         </div>
         <div class="flex-grow">
-            <p class="text-sm font-medium leading-relaxed">{{ message }}</p>
+            <p class="font-semibold leading-relaxed">{{ message }}</p>
         </div>
-        <button onclick="this.closest('div').remove()" class="text-gray-400 hover:text-gray-700 transition">
+        <button onclick="this.closest('div').remove()" class="text-gray-400 hover:text-gray-700 transition-colors duration-200 p-1 rounded-full hover:bg-white/50">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 
                 0L10 8.586l4.293-4.293a1 1 0 
@@ -163,11 +261,86 @@
   </div>
     
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-gray-200 py-6">
-    <div class="container mx-auto text-center">
-      <p>&copy; 2025 CU Packages. All rights reserved.</p>
-      <a href="#" class="text-blue-400 hover:underline">Contact Us</a>
+  <!-- Modern Gradient Footer -->
+  <footer class="relative bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%);"></div>
+    </div>
+    
+    <div class="relative container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <!-- Brand Section -->
+        <div class="col-span-2 md:col-span-1">
+          <h3 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">CU Packages</h3>
+          <p class="text-gray-300 mb-4">Simplify your school resumption with our carefully curated packages designed for every student's needs.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-blue-300">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="{% url 'store:home' %}" class="text-gray-300 hover:text-white transition-colors duration-300">Home</a></li>
+            <li><a href="{% url 'store:package-listing' %}" class="text-gray-300 hover:text-white transition-colors duration-300">Packages</a></li>
+            <li><a href="#about" class="text-gray-300 hover:text-white transition-colors duration-300">About Us</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Contact</a></li>
+          </ul>
+        </div>
+        
+        <!-- Customer Support -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-purple-300">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Help Center</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Shipping Info</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Returns</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <!-- Contact Info -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4 text-green-300">Get in Touch</h4>
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-envelope text-blue-400"></i>
+              <span class="text-gray-300">support@cupackages.com</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-phone text-purple-400"></i>
+              <span class="text-gray-300">+234 123 456 7890</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-map-marker-alt text-green-400"></i>
+              <span class="text-gray-300">Covenant University, Ota</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Border -->
+      <div class="border-t border-gray-700 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-center md:text-left">
+            &copy; 2025 CU Packages. All rights reserved. Made with ❤️ for students.
+          </p>
+          <div class="flex space-x-6 mt-4 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Terms of Service</a>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
