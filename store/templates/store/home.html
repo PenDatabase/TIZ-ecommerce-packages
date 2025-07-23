@@ -54,7 +54,7 @@
                     <p class="text-sm text-green-500 font-medium mb-4">Best for: {{ package.use_case }}</p>
                     <span class="text-blue-600 font-bold text-lg">&#8358;{{ package.price }}</span>
                     <div class="flex justify-between items-center mt-4">
-                      <button id="add-to-cart" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500" data-package-pk="{{ package.pk }}">Add to Cart</button>
+                      <button class="add-to-cart px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500" data-package-pk="{{ package.pk }}">Add to Cart</button>
                       <a href="{% url 'store:package-detail' package.pk %}" class="text-blue-600 hover:underline">View Details</a>
                     </div>
                 </div>
@@ -99,10 +99,9 @@
         </div>
     </div>
     </section>
+
+  <form method="post">
+    {% csrf_token %}
+  </form>
+
 {% endblock body %}
-    
-
-  
-
-
-  

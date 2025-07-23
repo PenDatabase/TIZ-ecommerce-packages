@@ -98,6 +98,7 @@ def create_payments(users, orders):
             user=order.user,
             order=order,
             reference=fake.uuid4(),
+            amount = 5000,
             status=random.choice([Payment.PENDING, Payment.COMPLETED]),
             completed_at=fake.date_time_this_year(tzinfo=timezone.get_current_timezone()) if random.choice([True, False]) else None
         )

@@ -48,7 +48,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
-ALLOWED_HOSTS = ['.up.railway.app']  # Allow all hosts on railway for deployment
+ALLOWED_HOSTS = ['127.0.0.1', '.up.railway.app']  # Allow all hosts on railway for deployment
 
 INTERNAL_IPS = [
     "127.0.0.1"

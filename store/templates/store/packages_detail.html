@@ -15,7 +15,7 @@
           <p class="text-lg text-gray-700 mb-6">{{ package.description }}</p>
           <p class="mb-4"><span class="font-bold">Best Use Cases:</span> {{package.use_case}}</p>
           <p class="mb-4"><span class="font-bold">Price:</span> <span class="text-blue-600 font-bold text-lg">&#8358; {{ package.price }} </span></p>
-          <button class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500">Add to Cart</button>
+          <button class="add-to-cart px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500" data-package-pk="{{ package.pk }}">Add to Cart</button>
           <button id="star-package" class="px-4 py-3 ml-4 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-100"><i class="fas fa-star"></i> Star Package</button>
         </div>
       </div>
@@ -55,27 +55,20 @@
       <div class="mt-16">
         <h2 class="text-3xl font-bold mb-6">You Might Also Like</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Suggested Package -->
-          <div class="package-card bg-white rounded-lg shadow-lg hover-bounce fade-in">
-            <img src="" alt="Fresher's Starter Pack" class="w-full h-48 object-cover">
-            <div class="p-6">
-                <a href="{% url 'store:package-detail' package.pk %}">
-                    <h3 class="text-lg underline hover:text-blue-600 font-semibold mb-2">{{ package.name }}</h3>
-                </a>
-                <p class="text-gray-600 mb-1">{{ package.description }}</p>
-                <p class="text-sm text-green-500 font-medium mb-4">Best for: {{ package.use_case }}</p>
-                <span class="text-blue-600 font-bold text-lg">&#8358;{{ package.price }}</span>
-                <div class="flex justify-between items-center mt-4">
-                    <a href="#" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500">Add to Cart</a>
-                    <a href="{% url 'store:package-detail' package.pk %}" class="text-blue-600 hover:underline">View Details</a>
-                </div>
-            </div>
-        </div>
-          <!-- Repeat for other suggested packages -->
+          <!-- Suggested packages functionality to be implemented -->
+          <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p class="text-gray-600">More suggested packages coming soon!</p>
+            <a href="{% url 'store:package-listing' %}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-500">Browse All Packages</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <form method="post">
+    {% csrf_token %}
+  </form>
+
 {% endblock body %}
 
 <!-- Bottom JS -->

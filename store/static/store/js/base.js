@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Event Listeners
 document.addEventListener("click", function (event) {
   // Check if the clicked element is the add-to-cart button
-  if (event.target.matches("#add-to-cart")) {
+  if (event.target.matches(".add-to-cart")) {
       let packagePk = event.target.getAttribute("data-package-pk"); 
 
       if (packagePk) {
@@ -45,7 +45,12 @@ function showNotification() {
 }
 
 function getCSRFToken(){
-  return document.querySelector('[name=csrfmiddlewaretoken]').value
+  const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+  if (!csrfElement) {
+    console.error('CSRF token not found. Make sure you have {% csrf_token %} in your template.');
+    return null;
+  }
+  return csrfElement.value;
 }
 
 
@@ -53,11 +58,17 @@ function getCSRFToken(){
 async function addToCart(package_pk) {
   console.log("called");
   try {
+      const csrfToken = getCSRFToken();
+      if (!csrfToken) {
+          console.error("Cannot add to cart: CSRF token not available");
+          return;
+      }
+
       const response = await fetch(`${window.location.origin}/cart/add/${package_pk}`, {
           method: "POST",
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              'X-CSRFToken': getCSRFToken(),
+              'X-CSRFToken': csrfToken,
           }
       });
 
