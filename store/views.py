@@ -44,8 +44,7 @@ class PackageListView(ListView):
         if search_key:
             queryset = queryset.filter(
                             models.Q(name__icontains=search_key) |
-                            models.Q(use_case__icontains=search_key) |
-                            models.Q(description__icontains=search_key)
+                            models.Q(use_case__icontains=search_key)
                             )
 
         return queryset.all() 
