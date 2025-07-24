@@ -1,12 +1,47 @@
-// Add fade-in animation to package cards
+// Mobile-optimized package card animations and interactions
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.package-card');
-    cards.forEach((card, index) => {
-      setTimeout(() => {
-        card.classList.add('fade-in');
-      }, index * 200);
+  // Enhanced fade-in animation for package cards
+  const cards = document.querySelectorAll('.package-card');
+  cards.forEach((card, index) => {
+    setTimeout(() => {
+      card.classList.add('fade-in');
+    }, index * 150); // Faster stagger for mobile
+  });
+
+  // Mobile-specific optimizations
+  if (window.innerWidth <= 768) {
+    // Reduce animation delays on mobile
+    const animatedElements = document.querySelectorAll('.animate-float');
+    animatedElements.forEach(el => {
+      el.style.animationDuration = '8s';
+    });
+  }
+
+  // Touch feedback for interactive elements
+  const touchElements = document.querySelectorAll('.touch-manipulation');
+  touchElements.forEach(element => {
+    element.addEventListener('touchstart', function() {
+      this.style.transform = 'scale(0.95)';
+      this.style.transition = 'transform 0.1s ease';
+    });
+    
+    element.addEventListener('touchend', function() {
+      this.style.transform = '';
+      this.style.transition = '';
     });
   });
+
+  // Improved mobile navigation handling
+  const mobileMenuButton = document.querySelector('[x-data] button[\\@click]');
+  if (mobileMenuButton) {
+    mobileMenuButton.addEventListener('click', function() {
+      // Add haptic feedback simulation
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    });
+  }
+});
 
 
 // Event Listeners

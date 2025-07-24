@@ -1,4 +1,4 @@
-/* Modern animations and effects */
+/* Modern animations and effects with mobile optimizations */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* Smooth scroll behavior */
@@ -6,9 +6,39 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Mobile-first responsive design */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 16px; /* Prevent mobile zoom on form inputs */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area support for devices with notches */
+.safe-area-padding {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Touch-friendly interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Enhanced scrollbar for mobile */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -73,15 +103,25 @@ html {
   background-clip: text;
 }
 
-/* Enhanced card styles */
+/* Mobile performance optimizations */
+.mobile-optimized {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Improved card interactions for mobile */
 .modern-card {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .modern-card::before {
@@ -111,12 +151,31 @@ html {
     0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Button styles */
+/* Mobile-specific hover states */
+@media (hover: none) and (pointer: coarse) {
+  .modern-card:hover {
+    transform: none;
+    box-shadow: 
+      0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+  
+  .modern-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+  }
+}
+
+/* Enhanced button styles for mobile */
 .btn-gradient {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  border: none;
+  cursor: pointer;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .btn-gradient::before {
@@ -142,6 +201,14 @@ html {
 .btn-gradient:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Mobile touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .btn-gradient:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+  }
 }
 
 /* Floating animations */
@@ -240,10 +307,141 @@ html {
   animation: shimmer 2s infinite;
 }
 
-/* Responsive design helpers */
+/* Responsive design helpers with mobile focus */
+@media (max-width: 640px) {
+  /* Mobile-first adjustments */
+  .modern-card:hover {
+    transform: translateY(-3px) scale(1.01);
+  }
+  
+  /* Improved button sizes for touch */
+  .btn-gradient {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+  
+  /* Better spacing for mobile */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mobile typography adjustments */
+  h1 {
+    font-size: 2.25rem; /* 36px */
+    line-height: 1.2;
+  }
+  
+  h2 {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.3;
+  }
+  
+  h3 {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.4;
+  }
+  
+  /* Mobile-friendly cards */
+  .package-card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Touch-friendly navigation */
+  nav a, nav button {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
 @media (max-width: 768px) {
   .modern-card:hover {
     transform: translateY(-5px) scale(1.01);
+  }
+  
+  /* Reduce animation intensity on smaller screens */
+  .animate-float {
+    animation-duration: 8s;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet-specific adjustments */
+  .grid-cols-1 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .modern-card {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .gradient-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  
+  /* Reduce vertical padding in landscape */
+  .py-24 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+/* Focus improvements for accessibility */
+@media (prefers-reduced-motion: no-preference) {
+  .focus-ring:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+  }
+}
+
+/* Mobile-specific utility classes and optimizations */
+.mobile-device {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+.touch-device .hover\:scale-105:hover {
+  transform: scale(1.02);
+}
+
+.touching {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Mobile menu improvements */
+@media (max-width: 1024px) {
+  .mobile-menu-open {
+    overflow: hidden;
+  }
+  
+  .mobile-menu-open .mobile-menu {
+    transform: translateX(0);
+  }
+}
+
+/* Form improvements for mobile */
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px; /* Touch-friendly size */
+  }
+  
+  button {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
@@ -267,6 +465,28 @@ html {
     transparent
   );
   animation: shimmer 1.5s infinite;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Custom focus styles */
