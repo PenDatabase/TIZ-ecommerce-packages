@@ -1,0 +1,197 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Confirmation | CU Packages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'gradient': 'gradient 15s ease infinite',
+            'pulse-slow': 'pulse 4s infinite',
+            'bounce-slow': 'bounce 3s infinite',
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+            'slide-up': 'slideUp 0.8s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            gradient: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            fadeIn: {
+              from: { opacity: '0', transform: 'translateY(20px)' },
+              to: { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideUp: {
+              from: { opacity: '0', transform: 'translateY(40px)' },
+              to: { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-inter bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
+  <!-- Modern Navbar -->
+  <nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-white/30 border-b border-white/20 shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+      <a href="{% url 'store:home' %}" class="group relative">
+        <span class="text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
+          CU Packages
+        </span>
+        <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="min-h-screen flex items-center justify-center px-6 pt-20">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse-slow"></div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="relative max-w-2xl w-full mx-auto">
+      <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12 animate-fade-in">
+        <!-- Success Icon -->
+        <div class="text-center mb-8">
+          <div class="relative inline-flex items-center justify-center w-24 h-24 mb-6 animate-bounce-slow">
+            <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full blur-xl opacity-30 animate-pulse-slow"></div>
+            <div class="relative w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+              <i class="fas fa-envelope-circle-check text-3xl text-white"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="text-center space-y-6 animate-slide-up" style="animation-delay: 0.3s;">
+          <!-- Title -->
+          <h1 class="text-4xl md:text-5xl font-black mb-4">
+            <span class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-700 bg-clip-text text-transparent">
+              {% if user.first_name %}Hi {{ user.first_name }}! {% endif %}Check Your Email!
+            </span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+            We've sent you an activation link{% if user %} to <span class="font-semibold text-blue-600">{{ user.email }}</span>{% endif %} to complete your registration.
+          </p>
+
+          <!-- Email Icon and Message -->
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-8 border border-blue-100">
+            <div class="flex items-center justify-center mb-4">
+              <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full p-3">
+                <i class="fas fa-paper-plane text-white text-xl"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-3">Email Sent Successfully</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Please check your inbox and click the activation link to complete your account setup. 
+              <span class="font-semibold text-blue-600">Don't forget to check your spam folder</span> if you don't see it in your inbox.
+            </p>
+          </div>
+
+          <!-- Instructions -->
+          <div class="space-y-4 text-left">
+            <h4 class="text-lg font-bold text-gray-800 text-center mb-6">What to do next:</h4>
+            <div class="grid gap-4">
+              <div class="flex items-start space-x-4 bg-white/50 rounded-xl p-4 border border-gray-100">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">1</span>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-gray-800 mb-1">Check Your Email</h5>
+                  <p class="text-gray-600 text-sm">Look for an email from CU Packages in your inbox.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-4 bg-white/50 rounded-xl p-4 border border-gray-100">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">2</span>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-gray-800 mb-1">Click the Activation Link</h5>
+                  <p class="text-gray-600 text-sm">Click the "Activate Account" button in the email.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-4 bg-white/50 rounded-xl p-4 border border-gray-100">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">3</span>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-gray-800 mb-1">Start Shopping</h5>
+                  <p class="text-gray-600 text-sm">Once activated, log in and explore our packages!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 pt-8">
+            <a href="{% url 'user:login' %}" 
+               class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 group">
+              <i class="fas fa-sign-in-alt mr-2 group-hover:translate-x-1 transition-transform"></i>
+              Go to Login
+            </a>
+            <a href="{% url 'store:home' %}" 
+               class="flex-1 bg-white text-gray-700 px-8 py-4 rounded-xl font-bold text-lg border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 group">
+              <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform"></i>
+              Back to Home
+            </a>
+          </div>
+
+          <!-- Help Section -->
+          <div class="mt-12 pt-8 border-t border-gray-200">
+            <p class="text-gray-500 text-sm mb-4">
+              <i class="fas fa-question-circle mr-2"></i>
+              Didn't receive the email?
+            </p>
+            <div class="flex flex-col sm:flex-row gap-2 text-sm">
+              <span class="text-gray-600">Check your spam folder or</span>
+              <a href="{% url 'user:register' %}" class="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+                try registering again
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative py-8 mt-16">
+    <div class="container mx-auto px-6 text-center">
+      <p class="text-gray-500 text-sm">
+        © 2025 CU Packages. All rights reserved.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -69,7 +69,10 @@ class RegisterView(CreateView):
         user.is_active = False # Deactivate user until email is activated
         user.save()
         send_activation_email(user, self.request)
-        return HttpResponse("Check your email to activate your account")
+        return render(self.request, 'registration/email_confirmation.html', {
+            'user': user,
+            'email': user.email
+        })
         
 
 
